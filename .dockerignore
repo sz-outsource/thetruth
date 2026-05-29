@@ -1,0 +1,17 @@
+.git
+.gitignore
+.claude
+.mcp.json
+.github
+Jenkinsfile
+Dockerfile
+.dockerignore
+DEPLOYMENT.md
+README.md
+node_modules
+.next
+out
+.env
+.env.*
+.DS_Store
+*.log

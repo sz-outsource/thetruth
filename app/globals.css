@@ -1,0 +1,224 @@
+@import "tailwindcss";
+
+/* ─────────────────────────────────────────────────────────────
+   明辨 / TheTruth — Editorial Light（审稿手稿)
+   纸 / 墨 / 朱：低饱和印刷油墨调色板,像红笔批改过的清样
+   ───────────────────────────────────────────────────────────── */
+
+@theme {
+  /* 纸 / 墨 */
+  --color-paper: #f4efe6;
+  --color-paper-deep: #ece4d6;
+  --color-card: #fbf8f1;
+  --color-ink: #211c17;
+  --color-ink-soft: #5a5247;
+  --color-ink-faint: #8c8073;
+  --color-rule: #d9cfbd;
+
+  /* 语义批注色(谬误/情绪/夸大/误导/有据) */
+  --color-fallacy: #b23a2e;
+  --color-emotion: #b8862f;
+  --color-exaggerate: #c2682b;
+  --color-mislead: #8e2b22;
+  --color-verified: #4a6b4f;
+
+  /* 字体(由 next/font 注入 CSS 变量,这里映射给 Tailwind) */
+  --font-display: var(--font-fraunces), var(--font-noto-serif-sc), Georgia, serif;
+  --font-serif: var(--font-newsreader), var(--font-noto-serif-sc), Georgia, serif;
+  --font-sc: var(--font-noto-serif-sc), var(--font-newsreader), serif;
+  --font-mono: var(--font-plex-mono), "Courier New", monospace;
+}
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-serif);
+  font-feature-settings: "liga" 1, "kern" 1;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* 纸张噪点 + 暗角:营造印刷纸面 */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+  opacity: 0.045;
+  mix-blend-mode: multiply;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background: radial-gradient(
+    120% 90% at 50% 0%,
+    transparent 55%,
+    rgba(33, 28, 23, 0.07) 100%
+  );
+}
+
+/* 主内容置于纹理之上 */
+#__app {
+  position: relative;
+  z-index: 2;
+}
+
+/* ── 排版基元 ───────────────────────────────────────────── */
+
+.font-display {
+  font-family: var(--font-display);
+}
+.font-serif {
+  font-family: var(--font-serif);
+}
+.font-sc {
+  font-family: var(--font-sc);
+}
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+/* 取证小标签:等宽 + small-caps + 字距 */
+.label-mono {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 章节序号 / kicker */
+.kicker {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--color-fallacy);
+}
+
+/* ── 批注笔法 ───────────────────────────────────────────── */
+
+/* 马克笔涂痕高亮:略旋转、边缘不齐的半透明背景 */
+mark.hook {
+  background-color: transparent;
+  color: inherit;
+  cursor: pointer;
+  position: relative;
+  padding: 0 0.08em;
+  border-radius: 0.1em;
+  transition: background-color 0.25s ease;
+  /* 颜色由 --hl 提供(逐类设置) */
+  background-image: linear-gradient(
+    104deg,
+    transparent 0.2em,
+    var(--hl) 0.2em,
+    var(--hl) calc(100% - 0.25em),
+    transparent calc(100% - 0.1em)
+  );
+  background-repeat: no-repeat;
+  background-size: 100% 62%;
+  background-position: 0 78%;
+}
+mark.hook::after {
+  /* 手绘下划线 */
+  content: "";
+  position: absolute;
+  left: 0.05em;
+  right: 0.05em;
+  bottom: 0.02em;
+  height: 2px;
+  background: var(--ul);
+  opacity: 0;
+  transform: scaleX(0.4);
+  transform-origin: left;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+mark.hook:hover,
+mark.hook[data-active="true"] {
+  background-size: 100% 92%;
+}
+mark.hook:hover::after,
+mark.hook[data-active="true"]::after {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+.hook-fallacy {
+  --hl: rgba(178, 58, 46, 0.22);
+  --ul: var(--color-fallacy);
+}
+.hook-emotion {
+  --hl: rgba(184, 134, 47, 0.24);
+  --ul: var(--color-emotion);
+}
+.hook-exaggerate {
+  --hl: rgba(194, 104, 43, 0.22);
+  --ul: var(--color-exaggerate);
+}
+.hook-mislead {
+  --hl: rgba(142, 43, 34, 0.2);
+  --ul: var(--color-mislead);
+}
+
+/* 首字下沉 */
+.dropcap::first-letter {
+  font-family: var(--font-display);
+  float: left;
+  font-size: 3.4em;
+  line-height: 0.78;
+  padding: 0.05em 0.1em 0 0;
+  color: var(--color-fallacy);
+  font-weight: 500;
+}
+
+/* 细分隔线 */
+.hr-rule {
+  height: 1px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--color-rule) 0,
+    var(--color-rule) 4px,
+    transparent 4px,
+    transparent 8px
+  );
+}
+
+/* 选区颜色 */
+::selection {
+  background: rgba(178, 58, 46, 0.18);
+}
+
+/* 自定义滚动条 */
+::-webkit-scrollbar {
+  width: 11px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-paper-deep);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-ink-faint);
+  border: 3px solid var(--color-paper-deep);
+  border-radius: 999px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}

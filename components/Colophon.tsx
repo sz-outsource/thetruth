@@ -1,31 +1,19 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { STRINGS, useI18n } from "@/lib/i18n";
 import Section from "./ui/Section";
 
-const PIPELINE = [
-  { zh: "输入言论", en: "Input" },
-  { zh: "识别钩子", en: "Identify" },
-  { zh: "多源检索", en: "Retrieve" },
-  { zh: "推理核查", en: "Reason" },
-  { zh: "还原追问", en: "Restore" },
-];
-
-const STACK = [
-  { layer: "前端", en: "Frontend", items: ["Next.js", "React", "Tailwind CSS"] },
-  { layer: "后端", en: "Backend", items: ["FastAPI", "Node.js"] },
-  { layer: "AI 能力", en: "Intelligence", items: ["Gemini API", "多模态推理"] },
-  { layer: "云服务", en: "Cloud", items: ["Cloud Run", "Vertex AI"] },
-  { layer: "数据层", en: "Data", items: ["PostgreSQL", "pgvector"] },
-  { layer: "订阅计费", en: "Billing", items: ["Stripe"] },
-];
+const PIPELINE = STRINGS.colophon.pipeline;
+const STACK = STRINGS.colophon.stack;
 
 export default function Colophon() {
+  const { t, accent } = useI18n();
   return (
     <Section
       index="04"
-      kicker="一条可追溯的推理链"
-      kickerEn="How we built it · colophon"
+      kicker={t(STRINGS.colophon.kicker)}
+      kickerEn={STRINGS.colophon.caption}
       className="py-20 md:py-28"
     >
       {/* 推理链管道 */}
@@ -40,9 +28,13 @@ export default function Colophon() {
               className="flex flex-col items-center rounded-sm border border-rule bg-card px-4 py-3"
             >
               <span className="font-sc text-[0.95rem] font-semibold text-ink">
-                {p.zh}
+                {t(p)}
               </span>
-              <span className="label-mono mt-0.5 text-ink-faint">{p.en}</span>
+              {accent(p) && (
+                <span className="label-mono mt-0.5 text-ink-faint">
+                  {accent(p)}
+                </span>
+              )}
             </motion.div>
             {i < PIPELINE.length - 1 && (
               <motion.span
@@ -63,7 +55,7 @@ export default function Colophon() {
       <div className="grid gap-px overflow-hidden rounded-sm border border-rule bg-rule sm:grid-cols-2 lg:grid-cols-3">
         {STACK.map((s, i) => (
           <motion.div
-            key={s.en}
+            key={s.layer.en}
             initial={{ opacity: 0, y: 14 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -72,19 +64,26 @@ export default function Colophon() {
           >
             <div className="flex items-baseline justify-between">
               <span className="font-sc text-[1.02rem] font-semibold text-ink">
-                {s.layer}
+                {t(s.layer)}
               </span>
-              <span className="label-mono text-ink-faint">{s.en}</span>
+              {accent(s.layer) && (
+                <span className="label-mono text-ink-faint">
+                  {accent(s.layer)}
+                </span>
+              )}
             </div>
             <div className="mt-3 flex flex-wrap gap-1.5">
-              {s.items.map((it) => (
-                <span
-                  key={it}
-                  className="font-mono rounded-full border border-rule bg-paper px-2.5 py-1 text-[0.72rem] text-ink-soft"
-                >
-                  {it}
-                </span>
-              ))}
+              {s.items.map((it) => {
+                const label = typeof it === "string" ? it : t(it);
+                return (
+                  <span
+                    key={label}
+                    className="font-mono rounded-full border border-rule bg-paper px-2.5 py-1 text-[0.72rem] text-ink-soft"
+                  >
+                    {label}
+                  </span>
+                );
+              })}
             </div>
           </motion.div>
         ))}

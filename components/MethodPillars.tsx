@@ -1,48 +1,31 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { STRINGS, useI18n } from "@/lib/i18n";
 import Section from "./ui/Section";
 
-const PILLARS = [
-  {
-    no: "i",
-    zh: "识别",
-    en: "Identify",
-    color: "var(--color-fallacy)",
-    desc: "识别逻辑谬误与诱导性修辞,并指出它在哪一步想绕过你的判断。",
-    glyph: "⌖",
-  },
-  {
-    no: "ii",
-    zh: "核查",
-    en: "Verify",
-    color: "var(--color-verified)",
-    desc: "对照多方来源与公开数据,分清哪些有据可查、哪些被夸大、哪些是误导。",
-    glyph: "≣",
-  },
-  {
-    no: "iii",
-    zh: "还原",
-    en: "Restore",
-    color: "var(--color-emotion)",
-    desc: "把整条推理摊开、可逐句追问,而不是直接丢给你一个「真 / 假」的标签。",
-    glyph: "⌥",
-  },
+const META = [
+  { no: "i", color: "var(--color-fallacy)", glyph: "⌖" },
+  { no: "ii", color: "var(--color-verified)", glyph: "≣" },
+  { no: "iii", color: "var(--color-emotion)", glyph: "⌥" },
 ];
 
+const PILLARS = STRINGS.method.pillars.map((p, i) => ({ ...META[i], ...p }));
+
 export default function MethodPillars() {
+  const { t, accent } = useI18n();
   return (
     <Section
       id="method"
       index="02"
-      kicker="它怎么帮你看清"
-      kickerEn="Identify · Verify · Restore"
+      kicker={t(STRINGS.method.kicker)}
+      kickerEn={STRINGS.method.caption}
       className="py-20 md:py-28"
     >
       <div className="grid gap-px overflow-hidden rounded-sm border border-rule bg-rule md:grid-cols-3">
         {PILLARS.map((p, i) => (
           <motion.div
-            key={p.en}
+            key={p.name.en}
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-50px" }}
@@ -60,14 +43,16 @@ export default function MethodPillars() {
             </div>
 
             <h3 className="font-sc mt-8 flex items-baseline gap-3 text-2xl font-semibold text-ink">
-              {p.zh}
-              <span className="label-mono" style={{ color: p.color }}>
-                {p.en}
-              </span>
+              {t(p.name)}
+              {accent(p.name) && (
+                <span className="label-mono" style={{ color: p.color }}>
+                  {accent(p.name)}
+                </span>
+              )}
             </h3>
 
             <p className="font-sc mt-3 text-[0.98rem] leading-relaxed text-ink-soft">
-              {p.desc}
+              {t(p.desc)}
             </p>
 
             <span
@@ -85,7 +70,7 @@ export default function MethodPillars() {
         transition={{ duration: 0.6, delay: 0.2 }}
         className="font-sc mt-8 text-center text-[0.95rem] italic text-ink-faint"
       >
-        它的目标不是替你下结论,而是把判断力还给你。
+        {t(STRINGS.method.footer)}
       </motion.p>
     </Section>
   );

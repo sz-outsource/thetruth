@@ -90,6 +90,17 @@ body::after {
 .font-sc {
   font-family: var(--font-sc);
 }
+/* 英文模式下,原为中文衬线的正文改用拉丁衬线(Newsreader),无需改动组件 */
+html[lang="en"] .font-sc {
+  font-family: var(--font-serif);
+}
+/* ── 新增语言的字体挂钩(扩展点)─────────────────────────────
+   新增日/韩时:在 app/layout.tsx 用 next/font 载入对应字体并暴露
+   CSS 变量(如 --font-jp / --font-kr),再取消下面对应规则的注释。
+   <html lang> 由 LanguageProvider 按 LOCALES.htmlLang 设置。
+   html[lang="ja"] .font-sc { font-family: var(--font-jp), var(--font-serif), serif; }
+   html[lang="ko"] .font-sc { font-family: var(--font-kr), var(--font-serif), serif; }
+   ──────────────────────────────────────────────────────────── */
 .font-mono {
   font-family: var(--font-mono);
 }

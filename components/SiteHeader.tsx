@@ -1,15 +1,19 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { STRINGS, useI18n } from "@/lib/i18n";
+import LanguageSelector from "./LanguageSelector";
 
 const NAV = [
-  { href: "#problem", zh: "理念", en: "Why" },
-  { href: "#method", zh: "方法", en: "Method" },
-  { href: "#demo", zh: "试用", en: "Try" },
-  { href: "#next", zh: "路线", en: "Next" },
+  { href: "#problem", label: STRINGS.header.nav.problem },
+  { href: "#method", label: STRINGS.header.nav.method },
+  { href: "#demo", label: STRINGS.header.nav.demo },
+  { href: "#next", label: STRINGS.header.nav.next },
 ];
 
 export default function SiteHeader() {
+  const { t, accent } = useI18n();
+
   return (
     <motion.header
       initial={{ opacity: 0, y: -12 }}
@@ -24,18 +28,25 @@ export default function SiteHeader() {
           </span>
           <span className="label-mono text-fallacy">TheTruth</span>
         </a>
-        <nav className="flex items-center gap-5 sm:gap-7">
-          {NAV.map((n) => (
-            <a
-              key={n.href}
-              href={n.href}
-              className="group flex flex-col items-center text-ink-soft transition-colors hover:text-fallacy"
-            >
-              <span className="font-sc text-sm">{n.zh}</span>
-              <span className="label-mono text-[0.55rem] opacity-60">{n.en}</span>
-            </a>
-          ))}
-        </nav>
+        <div className="flex items-center gap-4 sm:gap-6">
+          <nav className="flex items-center gap-5 sm:gap-7">
+            {NAV.map((n) => (
+              <a
+                key={n.href}
+                href={n.href}
+                className="group flex flex-col items-center text-ink-soft transition-colors hover:text-fallacy"
+              >
+                <span className="font-sc text-sm">{t(n.label)}</span>
+                {accent(n.label) && (
+                  <span className="label-mono text-[0.55rem] opacity-60">
+                    {accent(n.label)}
+                  </span>
+                )}
+              </a>
+            ))}
+          </nav>
+          <LanguageSelector />
+        </div>
       </div>
     </motion.header>
   );

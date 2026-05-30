@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { HERO_SAMPLE } from "@/lib/fixtures";
+import { STRINGS, useI18n } from "@/lib/i18n";
 import Dissection from "./Dissection";
 
 const rise = {
@@ -14,6 +15,7 @@ const rise = {
 };
 
 export default function Hero() {
+  const { t } = useI18n();
   return (
     <section id="top" className="relative mx-auto max-w-6xl px-6 pb-20 pt-14 md:px-10 md:pt-20">
       {/* 报头 kicker */}
@@ -24,9 +26,9 @@ export default function Hero() {
         animate="show"
         className="mb-8 flex items-center gap-4"
       >
-        <span className="kicker">独立判断 · 重新出厂</span>
+        <span className="kicker">{t(STRINGS.hero.kicker)}</span>
         <span className="hr-rule h-px flex-1" />
-        <span className="label-mono text-ink-faint">EST. 2026 · mingbian.ai</span>
+        <span className="label-mono text-ink-faint">{t(STRINGS.hero.est)}</span>
       </motion.div>
 
       <div className="grid gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
@@ -39,9 +41,9 @@ export default function Hero() {
             animate="show"
             className="font-display text-[2.7rem] font-semibold leading-[1.06] tracking-tight text-ink sm:text-6xl"
           >
-            把藏在文字里的
+            {t(STRINGS.hero.title.before)}
             <span className="relative whitespace-nowrap text-fallacy">
-              钩子
+              {t(STRINGS.hero.title.hook)}
               <svg
                 className="absolute -bottom-1 left-0 w-full"
                 height="10"
@@ -57,7 +59,7 @@ export default function Hero() {
                 />
               </svg>
             </span>
-            ,<br />摊到台面上。
+            {t(STRINGS.hero.title.after)}
           </motion.h1>
 
           <motion.p
@@ -67,7 +69,7 @@ export default function Hero() {
             animate="show"
             className="font-serif mt-6 max-w-md text-lg italic leading-relaxed text-ink-soft"
           >
-            See how a sentence is engineered to make you believe it.
+            {t(STRINGS.hero.subhead)}
           </motion.p>
 
           <motion.p
@@ -77,8 +79,7 @@ export default function Hero() {
             animate="show"
             className="font-sc mt-5 max-w-md text-[0.98rem] leading-relaxed text-ink-soft"
           >
-            被一句话带偏,常常不是因为你不够聪明,而是因为说服与误导本身,
-            就是一门被反复打磨的手艺。明辨把这些机制一个个摊给你看。
+            {t(STRINGS.hero.body)}
           </motion.p>
 
           <motion.div
@@ -92,7 +93,9 @@ export default function Hero() {
               href="#demo"
               className="group inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3 text-card transition-transform hover:-translate-y-0.5"
             >
-              <span className="font-sc text-[0.95rem]">贴一段话试试</span>
+              <span className="font-sc text-[0.95rem]">
+                {t(STRINGS.hero.ctaPrimary)}
+              </span>
               <span className="label-mono text-card/70 transition-transform group-hover:translate-x-1">
                 →
               </span>
@@ -101,7 +104,7 @@ export default function Hero() {
               href="#problem"
               className="font-sc text-[0.95rem] text-ink-soft underline decoration-rule decoration-2 underline-offset-4 transition-colors hover:text-fallacy"
             >
-              先了解它为什么有效
+              {t(STRINGS.hero.ctaSecondary)}
             </a>
           </motion.div>
         </div>
@@ -115,10 +118,14 @@ export default function Hero() {
           className="relative rotate-[0.6deg] rounded-sm border border-rule bg-card p-6 shadow-[0_30px_70px_-40px_rgba(33,28,23,0.55)] md:p-8"
         >
           <figcaption className="mb-4 flex items-center justify-between">
-            <span className="label-mono text-ink-faint">样本 · 一句广告语</span>
+            <span className="label-mono text-ink-faint">
+              {t(STRINGS.hero.sampleCaption)}
+            </span>
             <span className="flex items-center gap-1.5">
               <span className="h-2 w-2 animate-pulse rounded-full bg-fallacy" />
-              <span className="label-mono text-fallacy">批改中</span>
+              <span className="label-mono text-fallacy">
+                {t(STRINGS.hero.marking)}
+              </span>
             </span>
           </figcaption>
 
@@ -140,7 +147,7 @@ export default function Hero() {
         className="mt-16 flex items-center justify-center gap-3 text-ink-faint"
       >
         <span className="hr-rule h-px w-16" />
-        <span className="label-mono">向下,看清整套手艺</span>
+        <span className="label-mono">{t(STRINGS.hero.scrollHint)}</span>
         <span className="hr-rule h-px w-16" />
       </motion.div>
     </section>

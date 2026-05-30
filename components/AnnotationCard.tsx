@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { Annotation, HOOK_META } from "@/lib/fixtures";
+import { STRINGS, useI18n } from "@/lib/i18n";
 
 interface Props {
   annotation: Annotation;
@@ -18,6 +19,7 @@ export default function AnnotationCard({
   onActivate,
   registerRef,
 }: Props) {
+  const { t } = useI18n();
   const meta = HOOK_META[annotation.type];
 
   return (
@@ -49,16 +51,16 @@ export default function AnnotationCard({
 
       <div className="flex items-baseline justify-between gap-2">
         <span className="label-mono" style={{ color: meta.color }}>
-          {meta.en}
+          {t(meta)}
         </span>
       </div>
 
       <h4 className="font-sc mt-1 text-[0.98rem] font-semibold leading-snug text-ink">
-        {annotation.name}
+        {t(annotation.name)}
       </h4>
 
       <p className="font-sc mt-1.5 text-[0.82rem] leading-relaxed text-ink-soft">
-        {annotation.bypass}
+        {t(annotation.bypass)}
       </p>
 
       <AnimatePresence initial={false}>
@@ -72,9 +74,11 @@ export default function AnnotationCard({
             className="overflow-hidden"
           >
             <div className="mt-3 border-t border-dashed border-rule pt-3">
-              <span className="label-mono text-ink-faint">逐句追问 · trace</span>
+              <span className="label-mono text-ink-faint">
+                {t(STRINGS.annotation.trace)}
+              </span>
               <ol className="mt-2 space-y-1.5">
-                {annotation.reasoning.map((r, i) => (
+                {t(annotation.reasoning).map((r, i) => (
                   <li
                     key={i}
                     className="font-sc flex gap-2 text-[0.8rem] leading-relaxed text-ink-soft"
@@ -96,7 +100,7 @@ export default function AnnotationCard({
 
       {!active && (
         <span className="label-mono mt-2 block text-ink-faint opacity-0 transition-opacity group-hover:opacity-100">
-          点击展开追问 →
+          {t(STRINGS.annotation.expand)}
         </span>
       )}
     </motion.div>

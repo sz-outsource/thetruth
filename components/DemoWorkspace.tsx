@@ -3,18 +3,20 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { SAMPLES } from "@/lib/fixtures";
+import { STRINGS, pick, useI18n } from "@/lib/i18n";
 import Section from "./ui/Section";
 import Dissection from "./Dissection";
 import SourceCheck from "./SourceCheck";
 
 type Status = "idle" | "analyzing" | "done";
 
-const STEPS = ["识别修辞与谬误", "检索 · 对照多方来源", "还原推理 · 逐句可追问"];
-
 export default function DemoWorkspace() {
+  const { t, lang } = useI18n();
+  const stepLabels = t(STRINGS.demo.steps);
+
   const [sampleIdx, setSampleIdx] = useState(0);
   const sample = SAMPLES[sampleIdx];
-  const [text, setText] = useState(sample.raw);
+  const [text, setText] = useState(() => pick(SAMPLES[0].raw, "en"));
   const [status, setStatus] = useState<Status>("idle");
   const [step, setStep] = useState(0);
   const [runId, setRunId] = useState(0);
@@ -24,7 +26,7 @@ export default function DemoWorkspace() {
   const pickSample = (idx: number) => {
     clearTimers();
     setSampleIdx(idx);
-    setText(SAMPLES[idx].raw);
+    setText(pick(SAMPLES[idx].raw, lang));
     setStatus("idle");
     setStep(0);
   };
@@ -36,18 +38,24 @@ export default function DemoWorkspace() {
 
   useEffect(() => () => clearTimers(), []);
 
+  // 语言或样本变化时,只要不在解析中就把输入框回填为当前语言的原文
+  useEffect(() => {
+    if (status !== "analyzing") setText(pick(sample.raw, lang));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lang, sampleIdx]);
+
   const analyze = () => {
     clearTimers();
     setStatus("analyzing");
     setStep(0);
-    STEPS.forEach((_, i) => {
+    stepLabels.forEach((_, i) => {
       timers.current.push(setTimeout(() => setStep(i), 350 + i * 480));
     });
     timers.current.push(
       setTimeout(() => {
         setStatus("done");
         setRunId((r) => r + 1);
-      }, 350 + STEPS.length * 480)
+      }, 350 + stepLabels.length * 480)
     );
   };
 
@@ -55,13 +63,15 @@ export default function DemoWorkspace() {
     <Section
       id="demo"
       index="03"
-      kicker="把一段话摊到台面上"
-      kickerEn="The dissection · live demo"
+      kicker={t(STRINGS.demo.kicker)}
+      kickerEn={STRINGS.demo.caption}
       className="py-20 md:py-28"
     >
       {/* 工具条:样本切换 */}
       <div className="mb-4 flex flex-wrap items-center gap-2">
-        <span className="label-mono mr-1 text-ink-faint">试试样本</span>
+        <span className="label-mono mr-1 text-ink-faint">
+          {t(STRINGS.demo.trySample)}
+        </span>
         {SAMPLES.map((s, i) => (
           <button
             key={s.id}
@@ -72,7 +82,7 @@ export default function DemoWorkspace() {
                 : "border-rule bg-card text-ink-soft hover:border-ink-faint"
             }`}
           >
-            {s.kind}
+            {t(s.kind)}
           </button>
         ))}
       </div>
@@ -81,9 +91,13 @@ export default function DemoWorkspace() {
       <div className="rounded-sm border border-rule bg-card p-5 shadow-[0_20px_50px_-40px_rgba(33,28,23,0.5)] md:p-6">
         <div className="mb-2 flex items-center justify-between">
           <span className="label-mono text-ink-faint">
-            待核查文本 · {sample.kindEn}
+            {t(STRINGS.demo.textLabel)}
+            {t(sample.kind)}
           </span>
-          <span className="label-mono text-ink-faint">{text.length} 字</span>
+          <span className="label-mono text-ink-faint">
+            {text.length}
+            {t(STRINGS.demo.charSuffix)}
+          </span>
         </div>
         <textarea
           value={text}
@@ -94,12 +108,12 @@ export default function DemoWorkspace() {
           rows={3}
           spellCheck={false}
           className="font-sc w-full resize-none bg-transparent text-lg leading-relaxed text-ink outline-none placeholder:text-ink-faint"
-          placeholder="贴入一段论述、一条社媒帖或一篇文章……"
+          placeholder={t(STRINGS.demo.placeholder)}
         />
 
         <div className="mt-4 flex items-center justify-between border-t border-dashed border-rule pt-4">
           <span className="font-sc text-[0.8rem] text-ink-faint">
-            演示使用预置分析数据 · 真实版本由 Gemini 实时推理
+            {t(STRINGS.demo.demoNote)}
           </span>
           <button
             onClick={analyze}
@@ -107,7 +121,9 @@ export default function DemoWorkspace() {
             className="group inline-flex items-center gap-2 rounded-full bg-fallacy px-5 py-2.5 text-card transition-transform hover:-translate-y-0.5 disabled:opacity-60"
           >
             <span className="font-sc text-[0.9rem]">
-              {status === "done" ? "重新解析" : "解析这段话"}
+              {status === "done"
+                ? t(STRINGS.demo.reAnalyze)
+                : t(STRINGS.demo.analyze)}
             </span>
             <span className="label-mono text-card/80 transition-transform group-hover:translate-x-1">
               ↯
@@ -127,8 +143,8 @@ export default function DemoWorkspace() {
             className="overflow-hidden"
           >
             <div className="mt-6 space-y-3">
-              {STEPS.map((s, i) => (
-                <div key={s} className="flex items-center gap-3">
+              {stepLabels.map((s, i) => (
+                <div key={i} className="flex items-center gap-3">
                   <span
                     className={`flex h-5 w-5 items-center justify-center rounded-full border text-[0.6rem] transition-colors ${
                       i <= step
@@ -171,10 +187,14 @@ export default function DemoWorkspace() {
             className="mt-10"
           >
             <div className="mb-5 flex items-center gap-3">
-              <span className="label-mono text-fallacy">批改完成 · marked up</span>
+              <span className="label-mono text-fallacy">
+                {t(STRINGS.demo.markedUp)}
+              </span>
               <span className="hr-rule h-px flex-1" />
               <span className="label-mono text-ink-faint">
-                {Object.keys(sample.annotations).length} 处钩子 · {sample.sourceChecks.length} 项核查
+                {Object.keys(sample.annotations).length}
+                {t(STRINGS.demo.hooksUnit)} · {sample.sourceChecks.length}
+                {t(STRINGS.demo.checksUnit)}
               </span>
             </div>
 
@@ -185,7 +205,7 @@ export default function DemoWorkspace() {
                 segments={sample.segments}
                 annotations={sample.annotations}
                 resetKey={runId}
-                marginTitle="批注栏 · 点击展开追问"
+                marginTitle={t(STRINGS.demo.marginTitle)}
                 textClassName="font-sc text-xl leading-loose text-ink md:text-[1.7rem] md:leading-loose"
               />
             </div>
@@ -193,7 +213,9 @@ export default function DemoWorkspace() {
             {/* 多源核查 */}
             <div className="mt-10">
               <div className="mb-4 flex items-center gap-3">
-                <span className="label-mono text-verified">多源核查 · cross-check</span>
+                <span className="label-mono text-verified">
+                  {t(STRINGS.demo.crossCheck)}
+                </span>
                 <span className="hr-rule h-px flex-1" />
               </div>
               <SourceCheck checks={sample.sourceChecks} />

@@ -1,6 +1,7 @@
 "use client";
 
 import { Annotation, Segment } from "@/lib/fixtures";
+import { useI18n } from "@/lib/i18n";
 
 interface Props {
   segments: Segment[];
@@ -22,6 +23,7 @@ export default function AnnotatedText({
   registerMark,
   className = "",
 }: Props) {
+  const { t } = useI18n();
   return (
     <p className={className}>
       {segments.map((seg, i) => {
@@ -30,7 +32,7 @@ export default function AnnotatedText({
 
         if (!ann || !isRevealed) {
           // 普通文字,或尚未浮现的 hook(先以素文出现)
-          return <span key={i}>{seg.text}</span>;
+          return <span key={i}>{t(seg.text)}</span>;
         }
 
         return (
@@ -46,7 +48,7 @@ export default function AnnotatedText({
               onActivate(activeId === ann.id ? null : ann.id);
             }}
           >
-            {seg.text}
+            {t(seg.text)}
           </mark>
         );
       })}

@@ -33,7 +33,7 @@ export default function Dissection({
   autoReveal = false,
   stacked = false,
   textClassName = "",
-  marginTitle = "批注栏 · Margin notes",
+  marginTitle = "Margin notes",
   resetKey,
 }: Props) {
   // 显示顺序 = hook 在正文出现的顺序

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none">
+  <!-- 明辨 / TheTruth — 编辑批改风格图标:纸面 + 墨色「明」+ 朱红手绘引线 -->
+  <rect x="1" y="1" width="62" height="62" rx="13" fill="#f4efe6" stroke="#d9cfbd" stroke-width="1.5"/>
+  <g stroke="#211c17" stroke-linejoin="round" stroke-linecap="round" fill="none">
+    <!-- 日(左,较矮) -->
+    <rect x="13" y="17" width="16" height="27" rx="2.5" stroke-width="3.8"/>
+    <line x1="13" y1="30.5" x2="29" y2="30.5" stroke-width="3.4"/>
+    <!-- 月(右,较高:两横在上,腹部留白) -->
+    <rect x="33" y="13" width="17" height="35" rx="4.5" stroke-width="3.8"/>
+    <line x1="33" y1="22" x2="50" y2="22" stroke-width="3.4"/>
+    <line x1="33" y1="31" x2="50" y2="31" stroke-width="3.4"/>
+  </g>
+  <!-- 朱红手绘引线(沿用 Hero 笔法) -->
+  <path d="M14 55 C 26 51, 38 51, 50 55" stroke="#b23a2e" stroke-width="3" stroke-linecap="round" fill="none"/>
+</svg>
